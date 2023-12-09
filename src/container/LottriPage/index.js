@@ -14,10 +14,10 @@ const randomNumbers = (number = 9, defaultNumber) => {
 };
 
 // const params = `/?lottriType=${lottriType}&lottriId=${lottriId}&winingNumber=${winingNumber}`;
-// const actualLink = `http://localhost:3000/?lottriType=three&lottriId=A87D876N&winingNumber=56898`;
+// const actualLink = `http://localhost:3000/?lottritype=three&lottriid=A87D876N&winingnumber=56898`;
 
 function LottriPage() {
-  const defaultNumbers = [5, 9, 8, 7, 6];
+  const defaultNumbers = [5, 9, 8, 7];
   const parentRef = useRef();
   const tl = useRef();
   const [isWin, setIsWin] = useState(false);
@@ -26,14 +26,13 @@ function LottriPage() {
   const [second, setSecond] = useState(randomNumbers(9, defaultNumbers[1]));
   const [third, setThird] = useState(randomNumbers(9, defaultNumbers[2]));
   const [forth, setForth] = useState(randomNumbers(9, defaultNumbers[3]));
-  const [fifth, setFifth] = useState(randomNumbers(9, defaultNumbers[4]));
   const { width, height } = useWindowSize();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const lottriType = queryParams.get("lottritype");
   const lottriId = queryParams.get("lottriid");
-  const winingNumber = queryParams.get("winingNumber");
+  const winingNumber = queryParams.get("winingnumber");
   const winningNumberArray = winingNumber?.split("");
 
   const staticNumbers1 = [
@@ -92,20 +91,6 @@ function LottriPage() {
     }));
   };
 
-  const staticNumbers5 = [
-    1, 4, 3, 7, 5, 6, 7, 8, 9, 3, 7, 5, 6, 7, 8, 9, 7, 5, 6, 7, 8, 9, 7, 8, 9,
-    7, 5, 6,
-  ];
-  const indexToReplace5 = staticNumbers5.indexOf(3);
-  if (indexToReplace5 !== -1 && winningNumberArray?.length > 0) {
-    staticNumbers5[indexToReplace5] = winningNumberArray[4];
-  }
-  const staticNumberSet5 = (numbers) => {
-    return staticNumbers5.map((number) => ({
-      label: number,
-    }));
-  };
-
   useLayoutEffect(() => {
     const ctx = gsap.context((self) => {
       tl.current = gsap
@@ -113,20 +98,19 @@ function LottriPage() {
           paused: true,
           onComplete: () => {
             if (
-              first !== winningNumberArray[0] &&
-              second !== winningNumberArray[1] &&
-              third !== winningNumberArray[2] &&
-              forth !== winningNumberArray[3] &&
-              fifth !== winningNumberArray[4]
+              (first !== winningNumberArray[0] &&
+                second !== winningNumberArray[1] &&
+                third !== winningNumberArray[2]) ||
+              (lottriType === "four" && forth !== winningNumberArray[3])
             ) {
               setIsWin(true);
             } else {
               setIsLoss(true);
             }
-            setTimeout(() => {
-              setIsWin(false);
-              setIsLoss(false);
-            }, 30000);
+            // setTimeout(() => {
+            //   setIsWin(false);
+            //   setIsLoss(false);
+            // }, 30000);
           },
         })
         .fromTo(
@@ -172,17 +156,6 @@ function LottriPage() {
             duration: 4,
             yPercent: -7,
           }
-        )
-        .fromTo(
-          ".numbers-wrapper-5",
-          {
-            yPercent: -75,
-            ease: "none",
-          },
-          {
-            duration: 4,
-            yPercent: -7,
-          }
         );
     }, parentRef);
     return () => ctx.revert();
@@ -192,12 +165,11 @@ function LottriPage() {
     setSecond(staticNumberSet2([2, 4, 7]));
     setThird(staticNumberSet3([1, 3, 6]));
     setForth(staticNumberSet4([4, 7, 5]));
-    setFifth(staticNumberSet5([8, 7, 4]));
     tl.current.restart();
   };
 
   useEffect(() => {
-    const delay = 5000; // 3 seconds
+    const delay = 5000;
     const timeoutId = setTimeout(() => {
       handlePlay();
     }, delay);
@@ -239,7 +211,7 @@ function LottriPage() {
         </div>
 
         <div className="relative !mt-0">
-          <div className="flex gap-1 p-1 justify-center items-center h-32 rounded-lg relative z-10">
+          <div className="flex gap-2 p-1 justify-center items-center h-32 rounded-lg relative z-10">
             <div className="w-[68px] h-[102px] overflow-hidden relative">
               <img
                 src="./images/scroll-bg.png"
@@ -298,44 +270,27 @@ function LottriPage() {
                 </div>
               </div>
             </div>
-            <div className="w-[68px] h-[102px] overflow-hidden relative">
-              <img
-                src="./images/scroll-bg.png"
-                alt="scroll"
-                className="absolute left-0 top-0 right-0 bottom-0"
-              />
-              <div className="w-[68px] h-[84px] overflow-hidden relative bg-contain bg-no-repeat z-10 mt-[6px]">
-                <div className="w-14 numbers-wrapper-4 absolute left-0 top-0">
-                  {forth.map((item, index) => (
-                    <div
-                      key={index}
-                      className="h-12 w-14 flex items-center justify-center gap-2 text-4xl font-semibold numbers text-stroke-custom text-white"
-                    >
-                      {item.label}
-                    </div>
-                  ))}
+            {lottriType === "four" && (
+              <div className="w-[68px] h-[102px] overflow-hidden relative">
+                <img
+                  src="./images/scroll-bg.png"
+                  alt="scroll"
+                  className="absolute left-0 top-0 right-0 bottom-0"
+                />
+                <div className="w-[68px] h-[84px] overflow-hidden relative bg-contain bg-no-repeat z-10 mt-[6px]">
+                  <div className="w-14 numbers-wrapper-4 absolute left-0 top-0">
+                    {forth.map((item, index) => (
+                      <div
+                        key={index}
+                        className="h-12 w-14 flex items-center justify-center gap-2 text-4xl font-semibold numbers text-stroke-custom text-white"
+                      >
+                        {item.label}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="w-[68px] h-[102px] overflow-hidden relative">
-              <img
-                src="./images/scroll-bg.png"
-                alt="scroll"
-                className="absolute left-0 top-0 right-0 bottom-0"
-              />
-              <div className="w-[68px] h-[84px] overflow-hidden relative bg-contain bg-no-repeat z-10 mt-[6px]">
-                <div className="w-14 numbers-wrapper-5 absolute left-0 top-0">
-                  {fifth.map((item, index) => (
-                    <div
-                      key={index}
-                      className="h-12 w-14 flex items-center justify-center gap-2 text-4xl font-semibold numbers text-stroke-custom text-white"
-                    >
-                      {item.label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -351,7 +306,9 @@ function LottriPage() {
               className="w-[300px] h-[120px] m-auto !mt-0 flex items-center justify-center bg-cover relative z-10 heartbeat"
             >
               <h1 className="text-4xl pt-[15px] pl-[15px] mt-0 tracking-[12px] font-bold shadow-text text-white z-10 relative">
-                {winingNumber}
+                {winningNumberArray[0]} {winningNumberArray[1]}{" "}
+                {winningNumberArray[2]}{" "}
+                {lottriType === "four" && winningNumberArray[3]}
               </h1>
             </div>
 
