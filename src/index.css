@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Calistoga&display=swap");
+.app {
+  min-height: 100vh;
+}
+body {
+  font-family: "Calistoga", serif;
+}
+form {
+  width: 500px;
+  margin: 50px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+input {
+  @apply bg-zinc-100 border border-red-300 py-4 px-4;
+}
+.text-stroke-custom {
+  text-shadow: 5px 4px #000000;
+  font-size: 53px;
+  height: 80px;
+  padding-left: 5px;
+}
+.shadow-text {
+  text-shadow: 5px 4px #000000;
+}
+.box {
+  overflow: hidden;
+  border: 4px solid #ffffff00;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(var(--angle), #dc4a41, #687aff05) border-box;
+  animation: 3s rotate linear infinite;
+}
+
+.heartbeat {
+  animation: beat 0.4s alternate;
+  transform-origin: center;
+}
+@keyframes beat {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.4);
+  }
+}
+
+.slideup {
+  animation-name: slideUp;
+  animation-duration: 4s;
+  animation-timing-function: ease-in;
+}
+
+@keyframes slideUp {
+  0%,
+  50% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animated-box {
+  height: 150px;
+  /* transition: height 0.5s ease-in-out;
+  animation: increaseHeight 25s forwards; */
+}
+
+/* @keyframes increaseHeight {
+  from {
+    height: 0;
+  }
+  to {
+    height: 150px;
+  }
+} */
